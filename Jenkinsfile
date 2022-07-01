@@ -1,11 +1,13 @@
 pipeline {
   agent any
   stages {
-    stage('build') {
+    stage('sonar qube') {
       steps {
-        withMaven(maven: 'maven386') {
-          sh 'mvn clean install'
-        }
+      	        withSonarQubeEnv(credentialsId: 'sq-jk-ppl-token', installationName: 'do-sonarqube') {
+                	withMaven(maven:'maven386') {
+                        sh 'mvn -e sonar:sonar'
+                    }
+                }
       }
     }
   }
