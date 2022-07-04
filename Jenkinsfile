@@ -22,7 +22,27 @@ pipeline {
         timeout(time: 2, unit: 'MINUTES') {
            waitForQualityGate abortPipeline: true
         }
+        script {
+          currentBuild.result = 'ABORTED'
+        }
       }
     }    
+  }
+  post {
+      aborted {
+          emailext to: "deerao.in@gmail.com",
+          subject: "ABORTED $JOB_NAME Build No: $BUILD_NUMBER ",
+          body: "Build result:" + currentBuild.result + " took " + currentBuild.duration + " milliseconds."
+      }
+      failure {
+          emailext to: "deerao.in@gmail.com",
+          subject: "FAILED $JOB_NAME Build No: $BUILD_NUMBER ",
+          body: "Build result:" + currentBuild.result + " took " + currentBuild.duration + " milliseconds."
+      }
+      success {
+          emailext to: "deerao.in@gmail.com",
+          subject: "SUCCESS $JOB_NAME Build No: $BUILD_NUMBER ",
+          body: "Build result:" + currentBuild.result + " took " + currentBuild.duration + " milliseconds."
+      }        
   }
 }
